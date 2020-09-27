@@ -2,7 +2,7 @@ CC := gcc
 CFLAGS := -fPIC -flto -std=gnu99 -O2
 
 .PHONY: build
-build: .obj/lib.o QuickJS/libquickjs.a
+build: .obj/lib.o quickjs/libquickjs.a
 	$(CC) main.c .obj/lib.o QuickJS/libquickjs.a -lm -o main ${CFLAGS}
 
 .obj/lib.o: clean
@@ -12,5 +12,5 @@ build: .obj/lib.o QuickJS/libquickjs.a
 clean:
 	-rm .obj/* main
 
-QuickJS/libquickjs.a:
+quickjs/libquickjs.a:
 	$(MAKE) -C QuickJS
