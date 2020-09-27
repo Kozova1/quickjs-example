@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "lib.h"
 
+// example function for tic80's print()
 static JSValue js_print(JSContext* ctx, JSValueConst this_val,
                           int argc, JSValueConst *argv) {
     int x = 0, y = 0, color = 15, fixed = 0, scale = 1, smallfont = 0;
@@ -26,24 +27,27 @@ static JSValue js_print(JSContext* ctx, JSValueConst this_val,
         if (JS_ToInt32(ctx, &scale, argv[5]))
             return JS_EXCEPTION;
     }
-    if (argc >= 7) {
+    if (argc == 7) {
         smallfont = JS_ToBool(ctx, argv[6]);
     }
 
     printf("[tic] \"%s\"  ---  x:%d y:%d col:%d fixed:%d scale:%d smallfont:%d\n", JS_ToCString(ctx, argv[0]), x, y, color, fixed, scale, smallfont);
     return JS_NewInt32(ctx, 32); // width of text
 }
+// example of the tic80 reset()
 static JSValue js_reset(JSContext* ctx, JSValueConst this_val,
                           int argc, JSValueConst *argv) {
     printf("[tic] called reset() with %d args\n", argc);
     return JS_UNDEFINED;
 }
 
+// list of exported functions, the string is how they'll appear in the module
 static const JSCFunctionListEntry js_tic_funcs[] = {
-    JS_CFUNC_DEF("print", 1, js_print ),
+    JS_CFUNC_DEF("print", 7, js_print ),
     JS_CFUNC_DEF("reset", 0, js_reset ),
 };
 
+// initializes the module with the export functions list and it's length
 static int js_tic_init(JSContext *ctx, JSModuleDef *m)
 {
     return JS_SetModuleExportList(ctx, m, js_tic_funcs,
@@ -51,6 +55,7 @@ static int js_tic_init(JSContext *ctx, JSModuleDef *m)
 }
 
 
+// this is what we use later as the module itself.
 JSModuleDef *JS_INIT_MODULE(JSContext *ctx, const char *module_name)
 {
     JSModuleDef *m;

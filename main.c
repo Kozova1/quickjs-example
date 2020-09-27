@@ -8,6 +8,7 @@
 #include "quickjs/quickjs.h"
 #include "lib.h"
 
+/* translates a JSValue.tag to a const char*  */
 const char* tagtos(long long tag) {
     switch(tag) {
         case JS_TAG_INT:               return "int";
@@ -31,6 +32,9 @@ const char* tagtos(long long tag) {
 
 
 int main(const int argc, const char** argv) {
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * This section is only for reading the file properly  *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     if (argc != 2) {
         puts("usage: main file.js");
         return 1;
@@ -79,7 +83,9 @@ int main(const int argc, const char** argv) {
         );
         return -1;
     }
-    // Now we FINALLY know that everything went OK.
+    /* * * * * * * * * * * * * * *
+     * End file reading section  *
+     * * * * * * * * * * * * * * */
 
     JSRuntime* runtime = JS_NewRuntime();
     if (!runtime) {
@@ -94,12 +100,10 @@ int main(const int argc, const char** argv) {
         free(if_contents);
         return 1;
     }
+    // Adding our custom module that was defined in lib.c
     JS_AddModuleExport(ctx, JS_INIT_MODULE(ctx, "tic"), "tic");
-    int is_module = 0;
-    if (strstr(argv[1], ".mjs")) {
-        is_module = JS_EVAL_TYPE_MODULE;
-    }
-    JSValue result = JS_Eval(ctx, if_contents, if_size, argv[1], JS_EVAL_FLAG_STRICT | is_module);
+    // Evaluating the file that was read.
+    JSValue result = JS_Eval(ctx, if_contents, if_size, argv[1], JS_EVAL_TYPE_MODULE);
     if (JS_IsException(result)) {
         printf("JS err : %s\n", JS_ToCString(ctx, JS_GetException(ctx)));
     } else if (JS_IsFunction(ctx, result)) {
