@@ -1,7 +1,7 @@
 #ifndef __LIB_H_
 #define __LIB_H_
 
-#include "QuickJS/quickjs.h"
+#include "quickjs/quickjs.h"
 
 #ifdef JS_SHARED_LIBRARY
 #define JS_INIT_MODULE js_init_module

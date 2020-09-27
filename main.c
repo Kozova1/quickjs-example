@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include "QuickJS/quickjs.h"
+#include "quickjs/quickjs.h"
 #include "lib.h"
 
 const char* tagtos(long long tag) {

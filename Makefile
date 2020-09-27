@@ -13,4 +13,4 @@ clean:
 	-rm .obj/* main
 
 quickjs/libquickjs.a:
-	$(MAKE) -C QuickJS
+	$(MAKE) -C quickjs
