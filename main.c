@@ -103,16 +103,20 @@ int main(const int argc, const char** argv) {
     // Adding our custom module that was defined in lib.c
     JS_AddModuleExport(ctx, JS_INIT_MODULE(ctx, "tic"), "tic");
     // Evaluating the file that was read.
-    JSValue result = JS_Eval(ctx, if_contents, if_size, argv[1], JS_EVAL_TYPE_MODULE);
+    JSValue result = JS_Eval(ctx, if_contents, if_size-3, argv[1], JS_EVAL_TYPE_MODULE);
     if (JS_IsException(result)) {
         printf("JS err : %s\n", JS_ToCString(ctx, JS_GetException(ctx)));
     } else if (JS_IsFunction(ctx, result)) {
-        JSValue res = JS_Call(ctx, result, result, 0, NULL);
+        JSValue this = JS_DupValue(ctx, result);
+        JSValue res = JS_Call(ctx, result, this, 0, NULL);
         puts(JS_ToCString(ctx, result));
         puts(JS_ToCString(ctx, res));
+        JS_FreeValue(ctx, result);
+        JS_FreeValue(ctx, res);
     } else {
         printf("val = %s : %s\n", JS_ToCString(ctx, result), tagtos(result.tag));
     }
+    JS_FreeValue(ctx, result);
 
     JS_RunGC(runtime);
 
@@ -121,4 +125,3 @@ int main(const int argc, const char** argv) {
     free(if_contents);
     return 0;
 }
-
